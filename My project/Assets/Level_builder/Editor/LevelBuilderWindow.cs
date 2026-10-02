@@ -6,6 +6,8 @@ public class LevelBuilderWindow : EditorWindow
 {
     private float gridSize = 1f;
     private bool builderEnabled = false;
+    private GameObject selectedPrefab;
+    private GameObject selectedPrefabPreview;
     [SerializeField] private GameObject prefab;
     [MenuItem("Tools/Level Builder")]
     public static void ShowWindow()
@@ -24,6 +26,7 @@ public class LevelBuilderWindow : EditorWindow
         GUILayout.Space(10);
 
         builderEnabled = EditorGUILayout.Toggle("Enable Builder", builderEnabled);
+        selectedPrefab = (GameObject)EditorGUILayout.ObjectField("Prefab", selectedPrefab, typeof(GameObject), false);
         if (GUI.changed)
         {
             SceneView.RepaintAll();
@@ -84,6 +87,15 @@ public class LevelBuilderWindow : EditorWindow
             Vector3 cellCenter = new Vector3(cellX, 0, cellZ);
             Handles.color = Color.yellow;
             Handles.DrawWireCube(cellCenter, new Vector3(gridSize, 0.01f, gridSize));
+            if (selectedPrefabPreview == null && selectedPrefab != null)
+            {
+                selectedPrefabPreview = PrefabUtility.InstantiatePrefab(selectedPrefab) as GameObject;
+            }
+
+            if (selectedPrefabPreview != null)
+            {
+                selectedPrefabPreview.transform.position = cellCenter;
+            }
         }
     }
 }
